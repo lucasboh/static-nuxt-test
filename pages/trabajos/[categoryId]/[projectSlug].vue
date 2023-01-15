@@ -18,17 +18,13 @@ import GET_PROJECT_BY_SLUG from '@/graphql/getProjectBySlug'
 const graphql = useStrapiGraphQL()
 
 const project = ref<Project>(null)
+const { params } = useRoute()
 
-try {
-  const response: ProjectResponse = await graphql(GET_PROJECT_BY_SLUG(useRoute().params.projectSlug, 'es'))
+const { data } = await useAsyncData<ProjectResponse>(`project-${params.projectSlug}`, () => graphql(GET_PROJECT_BY_SLUG(params.projectSlug, 'es')))
 
-  project.value = response.data.projects.data[0]
+if (data.value) {
+  project.value = data.value.data.projects.data[0]
 }
-catch (error) {
-  // eslint-disable-next-line no-console
-  console.error(error)
-}
-
 </script>
 
 <style lang="scss">
