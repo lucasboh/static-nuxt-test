@@ -31,19 +31,16 @@ const graphql = useStrapiGraphQL()
 
 const subcategories = ref<Subcategory[]>([])
 const projects = ref<Project[]>([])
+const { params } = useRoute()
 
-try {
-  const response: ProjectsResponse =
-      await graphql(GET_PROJECTS_BY_CATEGORY(useRoute().params.categoryId, 'es'))
+const { data } = await useAsyncData<ProjectsResponse>(`category-${params.categoryId}`, () =>
+    graphql(GET_PROJECTS_BY_CATEGORY(params.categoryId, 'es')))
 
-  subcategories.value = response.data.subcategories.data
+if (data.value) {
+  subcategories.value = data.value.data.subcategories.data
   subcategories.value.unshift({ id: 'all', attributes: { name: 'all' } } as Category)
 
-  projects.value = response.data.category.data.attributes.projects.data
-}
-catch (error) {
-  // eslint-disable-next-line no-console
-  console.error(error)
+  projects.value = data.value.data.category.data.attributes.projects.data
 }
 
 const selectedSubcategory = ref<string>('all')

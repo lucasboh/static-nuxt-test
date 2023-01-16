@@ -1,7 +1,7 @@
 <template>
   <div class="projects layout-wrapper">
     <h1>Titulo</h1>
-    <section v-if="categories.length && asphaltProject" class="categories-container">
+    <section v-if="categories.length" class="categories-container">
       <!-- planta asfáltica (project but with category view) -->
       <!-- other categories -->
       <NuxtLink v-for="category in categories" :key="category.id" :to="`/trabajos/${category.id}`">
@@ -23,15 +23,11 @@ const graphql = useStrapiGraphQL()
 const categories = ref<Category[]>([])
 const asphaltProject = ref<Project>()
 
-try {
-  const response: CategoriesResponse = await graphql(GET_CATEGORIES('es'))
+const { data  } = await useAsyncData<CategoriesResponse>('categories', () => graphql(GET_CATEGORIES('es')))
 
-  categories.value = response.data.categories.data
-  asphaltProject.value = response.data.projects.data[0]
-}
-catch (error) {
-  // eslint-disable-next-line no-console
-  console.error(error)
+if (data.value) {
+  categories.value = data.value.data.categories.data
+  asphaltProject.value = data.value.data.projects.data[0]
 }
 
 //  *** SEO ***
