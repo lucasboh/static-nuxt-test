@@ -25,6 +25,8 @@ const asphaltProject = ref<Project>()
 
 const { data  } = await useAsyncData<CategoriesResponse>('categories', () => graphql(GET_CATEGORIES('es')))
 
+console.log(data.value);
+
 if (data.value) {
   categories.value = data.value.data.categories.data
   asphaltProject.value = data.value.data.projects.data[0]

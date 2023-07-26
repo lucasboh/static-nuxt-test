@@ -2,7 +2,7 @@ export function getStrapiMedia (url: string): string {
   // Check if URL is a local path
   if (url?.startsWith('/')) {
     // Prepend Strapi address
-    return `${useRuntimeConfig().STRAPI_URL}${url}`
+    return `${useRuntimeConfig().public.STRAPI_URL}${url}`
   }
 
   // Otherwise return full URL
@@ -19,7 +19,7 @@ export function prepareHTML (html: string, viewportWidth: number): string {
   html = html.replace(/(<img[^>]*)height="([^"]+)"/g, '$1height="auto"')
 
   // handle responsive images
-  html = html.replace(/(\/)+(uploads\/)/g, `${useRuntimeConfig().STRAPI_URL}/$2`) || ''
+  html = html.replace(/(\/)+(uploads\/)/g, `${useRuntimeConfig().public.STRAPI_URL}/$2`) || ''
 
   const breakpoints = {
     xlarge: 1919,
